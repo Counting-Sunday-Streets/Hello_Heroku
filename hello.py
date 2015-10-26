@@ -14,17 +14,7 @@ def hello():
 		return "Success!"
 
 def post_to_postgres(num_people):
-	urlparse.uses_netloc.append("postgres")
-	url = urlparse.urlparse(os.environ["DATABASE_URL"])
-
-	conn = psycopg2.connect(
-    	database=url.path[1:],
-    	user=url.username,
-    	password=url.password,
-    	host=url.hostname,
-    	port=url.port
-	)
-	#conn = psycopg2.connect("dbname=count user=alex password=engi120 host=localhost")
+	conn = psycopg2.connect("dbname=d903vmg658ksh1 user=navthyjfrkmxvh password=1hup-6RLTPuHvpnHpQ9Zte9pcC host=ec2-107-20-223-116.compute-1.amazonaws.com")
 
 	cur = conn.cursor()
 
@@ -32,7 +22,6 @@ def post_to_postgres(num_people):
 	conn.commit()
 	cur.close()
 	conn.close()
-
 
 if __name__ == '__main__':
 	app.debug = True
