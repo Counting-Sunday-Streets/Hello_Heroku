@@ -1,14 +1,36 @@
 body {
-  padding-top: 100px;
-  padding-bottom: 50px;
+/*  padding-top: 100px;
+  padding-bottom: 50px;*/
 }
 
 .custom-btn {
-  margin: 4px;
+  margin: 25px;
   /*background-color: #000090;*/
   height: 70px;
   color: #FFF;
   font-size: 25px;
   font-weight: bold;
 }
+
+.custom-btn2 {
+  margin: 5px;
+  /*background-color: #000090;*/
+  height: 70px;
+  color: #FFF;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.img-sundayst {
+	padding-top: 100px;
+	padding-bottom: 35px;
+}
+
+.img-stopwt {
+	padding-top: 75px;
+	padding-bottom: 20px;
+}
+
+
+
 
