@@ -1,0 +1,14 @@
+body {
+  padding-top: 100px;
+  padding-bottom: 50px;
+}
+
+.custom-btn {
+  margin: 4px;
+  /*background-color: #000090;*/
+  height: 70px;
+  color: #FFF;
+  font-size: 25px;
+  font-weight: bold;
+}
+
