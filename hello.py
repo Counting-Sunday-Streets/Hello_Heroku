@@ -10,8 +10,8 @@ def hello():
 	if request.method == "GET":
 		return render_template('index.html')
 	else:
-		post_to_postgres(request.form['num_people'])
-		return "Success!"
+		post_to_postgres(request.form['buttonValue'])
+		return render_template('index.html')
 
 @app.route('/data/')
 def get_data():
