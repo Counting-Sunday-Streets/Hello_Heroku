@@ -49,35 +49,47 @@
 
     <input class="btn btn-default" type="button" value="Start" id="startButton" />
     
-
-    <p>The button was pressed <span id="displayCount">0</span> times.</p>
+    </br></br>
     <span id="time"></span>
+    </br></br>
+    <p> <span id="displayCountPed">0</span> Pedestrians | <span id="displayCountBike">0</span> Cyclists </p>
 
 </br></br>
 <form id="counter" method="post" action=" {{ url_for('hello') }} ">
   <div class="form-group">
-    <input class="btn btn-default" type="button" value="Count" id="countButton" />
-    <input type="hidden" id="buttonValue" name="buttonValue" >
+    <input class="btn btn-default" type="button" value="Count Pedestrian" id="countPedButton" />
+    <input class="btn btn-default" type="button" value="Count Bike" id="countBikeButton" />
+    <input type="hidden" id="buttonPedValue" name="buttonPedValue" >
+    <input type="hidden" id="buttonBikeValue" name="buttonBikeValue" >
   </div>
 </form>
 
 </div><!-- /.container -->
 
     <script type="text/javascript">
-      var count = 0;
-      var button = document.getElementById("countButton");
+      var countPed = 0;
+      var countBike = 0;
+      var pedButton = document.getElementById("countPedButton");
+      var bikeButton = document.getElementById("countBikeButton");
       var start = document.getElementById("startButton");
-      var displayNum = document.getElementById("displayCount");
-      var buttonValue = document.getElementById("buttonValue")
+      var displayNumPed = document.getElementById("displayCountPed");   
+      var displayNumBike = document.getElementById("displayCountBike");
+      var buttonPedValue = document.getElementById("buttonPedValue")
+      var buttonBikeValue = document.getElementById("buttonBikeValue")
 
       start.onclick = function(){
         display = document.querySelector('#time');
         startTimer(5, display);
       }
 
-      button.onclick = function(){
-        count++;
-        displayNum.innerHTML = count;
+      pedButton.onclick = function(){
+        countPed++;
+        displayNumPed.innerHTML = countPed;
+      }
+
+      bikeButton.onclick = function(){
+        countBike++;
+        displayNumBike.innerHTML = countBike;
       }
 
       function startTimer(duration, display) {
@@ -105,9 +117,11 @@
             start = Date.now() + 1000;
           }
         if (diff == 0) {
-          buttonValue.value = count;
+          buttonPedValue.value = countPed;
+          buttonBikeValue.value = countBike;
           document.getElementById("counter").submit();
         }
+
         };
     // we don't want to wait a full second before the timer starts
     timer();
