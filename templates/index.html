@@ -64,6 +64,11 @@
 </div><!-- /.container -->
 
     <script type="text/javascript">
+      if ('addEventListener' in document) {
+        document.addEventListener('DOMContentLoaded', function() {
+          FastClick.attach(document.body);
+        }, false);
+      }
       var count = 0;
       var button = document.getElementById("countButton");
       var start = document.getElementById("startButton");
@@ -125,5 +130,6 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/fastclick.js') }}"></script>
   </body>
   </html>
