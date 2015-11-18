@@ -18,7 +18,7 @@ def hello():
 def get_data():
 	return str(get_from_postgres());
 
-def post_to_postgres(num_people):
+def post_to_postgres(num_people, num_bikes):
 	conn = connect_postgres()
 	
 	cur = conn.cursor()

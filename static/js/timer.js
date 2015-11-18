@@ -1,25 +1,24 @@
-      if ('addEventListener' in document) {
-        document.addEventListener('DOMContentLoaded', function() {
-          FastClick.attach(document.body);
-        }, false);
-      }
-      
-      var count = 0;
-      var button = document.getElementById("countButton");
+var countPed = 0;
+      var countBike = 0;
+      var pedButton = document.getElementById("countPedButton");
+      var bikeButton = document.getElementById("countBikeButton");
       var start = document.getElementById("startButton");
-      var displayNum = document.getElementById("displayCount");
-      var buttonValue = document.getElementById("buttonValue")
-
+      var displayNumPed = document.getElementById("displayCountPed");   
+      var displayNumBike = document.getElementById("displayCountBike");
+      var buttonPedValue = document.getElementById("buttonPedValue")
+      var buttonBikeValue = document.getElementById("buttonBikeValue")
       start.onclick = function(){
         display = document.querySelector('#time');
         startTimer(5, display);
       }
-
-      button.onclick = function(){
-        count++;
-        displayNum.innerHTML = count;
+      pedButton.onclick = function(){
+        countPed++;
+        displayNumPed.innerHTML = countPed;
       }
-
+      bikeButton.onclick = function(){
+        countBike++;
+        displayNumBike.innerHTML = countBike;
+      }
       function startTimer(duration, display) {
         var start = Date.now(),
         diff,
@@ -29,23 +28,20 @@
         // get the number of seconds that have elapsed since 
         // startTimer() was called
         diff = duration - (((Date.now() - start) / 1000) | 0);
-
         // does the same job as parseInt truncates the float
         minutes = (diff / 60) | 0;
         seconds = (diff % 60) | 0;
-
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
-
         display.textContent = minutes + ":" + seconds; 
-
         if (diff <= 0) {
             // add one second so that the count down starts at the full duration
             // example 05:00 not 04:59
             start = Date.now() + 1000;
           }
         if (diff == 0) {
-          buttonValue.value = count;
+          buttonPedValue.value = countPed;
+          buttonBikeValue.value = countBike;
           document.getElementById("counter").submit();
         }
         };
@@ -53,7 +49,6 @@
     timer();
     setInterval(timer, 1000);
   }
-
   //window.onload = function () {
     //var fiveMinutes = 60 * 15,
     //display = document.querySelector('#time');
