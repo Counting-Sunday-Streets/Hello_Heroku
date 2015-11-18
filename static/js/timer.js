@@ -1,8 +1,9 @@
-if ('addEventListener' in document) {
+      if ('addEventListener' in document) {
         document.addEventListener('DOMContentLoaded', function() {
           FastClick.attach(document.body);
         }, false);
       }
+      
       var count = 0;
       var button = document.getElementById("countButton");
       var start = document.getElementById("startButton");
