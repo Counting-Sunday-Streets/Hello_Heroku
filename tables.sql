@@ -1,0 +1,1 @@
+CREATE TABLE sessions (id SERIAL PRIMARY KEY, eid integer, time time, location text, count_people integer, count_bikes integer);
