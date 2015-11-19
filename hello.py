@@ -2,7 +2,8 @@ import os
 import urlparse
 import psycopg2
 from flask import Flask, render_template, request
-from datetime import datetime
+import calendar
+import time
 
 app = Flask(__name__)
 
@@ -23,7 +24,7 @@ def post_to_postgres(num_people, num_bikes):
 	
 	cur = conn.cursor()
 
-	cur.execute("INSERT INTO sessions (eid, time, location, count_people, count_bikes) VALUES (%s,%s,%s,%s,%s)", (1, str(datetime.now()), "location", num_people, num_bikes))
+	cur.execute("INSERT INTO sessions (eid, time, location, count_people, count_bikes) VALUES (%s,%s,%s,%s,%s)", (1, calendar.timegm(time.gmtime()), "location", num_people, num_bikes))
 	conn.commit()
 	cur.close()
 	conn.close()

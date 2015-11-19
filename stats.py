@@ -1,4 +1,8 @@
 import scipy.integrate
+import collections 
+import urlparse
+import os
+import psycopg2
 
 def integrate_simps(points):
 	"""
@@ -9,4 +13,32 @@ def integrate_simps(points):
 
 	return scipy.integrate.trapz(y_val, x_val, 'avg')
 
-print integrate_simps([(0, 0), (3, 3)])
+def pull_results(conn):
+	"""
+	Queries the database and returns lists of tuple rows mapped to locations
+	"""
+	cur = conn.cursor()
+
+	cur.execute("SELECT time,location,count_people,count_bikes FROM sessions;")
+	
+	data_map = collections.defaultdict(list)
+	for row in cur.fetchall():
+		data_map[row[1]].append((row[0], row[2], row[3]))
+
+	cur.close()
+	conn.close()
+	return data_map
+
+def connect_postgres():
+	urlparse.uses_netloc.append("postgres")
+	url = urlparse.urlparse(os.environ["DATABASE_URL"])
+
+	conn = psycopg2.connect(
+    	database=url.path[1:],
+    	user=url.username,
+    	password=url.password,
+    	host=url.hostname,
+    	port=url.port)
+	return conn
+
+print pull_results(connect_postgres())
