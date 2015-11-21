@@ -11,7 +11,7 @@ def integrate_simps(points):
 	y_val = [tup[1] for tup in points]
 	x_val = [tup[0] for tup in points]
 
-	return scipy.integrate.trapz(y_val, x_val, 'avg')
+	return scipy.integrate.simps(y_val, x_val, 'avg')
 
 def pull_results(conn):
 	"""
