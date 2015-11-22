@@ -15,6 +15,21 @@ def hello():
 		post_to_postgres(request.form['buttonPedValue'], request.form['buttonBikeValue'])
 		return render_template('index.html')
 
+@app.route('/createevent/')
+def create_event():
+	return render_template('create_event.html')
+
+@app.route('/selectevent/')
+def select_event():
+	conn = connect_postgres()
+
+	cur = conn.cursor()
+	events = []
+	cur.execute("SELECT distinct id FROM events")
+	for eid in cur:
+		events.append(dict(text=eid))
+	return render_template('select_event.html', events=events)
+
 @app.route('/data/')
 def get_data():
 	return str(get_from_postgres());
