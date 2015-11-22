@@ -13,6 +13,10 @@ def integrate_simps(points):
 
 	return scipy.integrate.simps(y_val, x_val, 'avg')
 
+def setup_points(data):
+	points = []
+	
+
 def pull_results(conn):
 	"""
 	Queries the database and returns lists of tuple rows mapped to locations

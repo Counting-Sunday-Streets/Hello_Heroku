@@ -10,10 +10,10 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def hello():
 	if request.method == "GET":
-		return render_template('index.html')
+		return render_template('counter.html')
 	else:
 		post_to_postgres(request.form['buttonPedValue'], request.form['buttonBikeValue'])
-		return render_template('index.html')
+		return render_template('counter.html')
 
 @app.route('/data/')
 def get_data():
