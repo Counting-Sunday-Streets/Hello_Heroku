@@ -1,0 +1,12 @@
+body {
+  padding-top: 150px;
+}
+
+.btn {
+	width: 100%;
+}
+
+.count-text {
+	font-size: 40px;
+	font-weight: bold;
+}
