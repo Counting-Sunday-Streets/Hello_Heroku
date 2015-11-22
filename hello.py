@@ -58,6 +58,24 @@ def get_from_postgres():
 	conn.close()
 	return data
 
+@app.route('/displaydata/', methods=['GET', 'POST'])
+def display_data():
+	conn = connect_postgres()
+
+	cur = conn.cursor()
+	events = []
+	cur.execute("SELECT distinct id FROM events")
+	for eid in cur:
+		events.append(dict(text=eid))
+
+
+	if request.method == "GET":
+		return render_template('display_data.html', events=events,data=dict(eid=5, nump=3, numb=2))
+	else:
+		#post_to_postgres(request.form['buttonPedValue'], request.form['buttonBikeValue'])
+		return render_template('display_data.html', events=events,data=dict(eid=0, nump=0, numb=0))
+
+
 def connect_postgres():
 	urlparse.uses_netloc.append("postgres")
 	url = urlparse.urlparse(os.environ["DATABASE_URL"])
