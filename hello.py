@@ -6,6 +6,7 @@ import calendar
 import time
 import collections
 import scipy.integrate
+import logging
 
 app = Flask(__name__)
 
@@ -31,8 +32,10 @@ def select_event():
 	cur = conn.cursor()
 	events = []
 	cur.execute("SELECT distinct id FROM events")
-	for eid in cur:
-		events.append(dict(text=eid))
+	for eid in cur.fetchall():
+		app.logger.info(eid)
+		events.append(dict(text=eid[0]))
+	app.logger.info(events)
 	return render_template('select_event.html', events=events)
 
 @app.route('/data/')
@@ -66,7 +69,7 @@ def display_data():
 	cur = conn.cursor()
 	events = []
 	cur.execute("SELECT distinct id FROM events")
-	for eid in cur:
+	for eid in cur.fetchall():
 		events.append(dict(text=eid))
 
 
