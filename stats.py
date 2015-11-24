@@ -4,6 +4,9 @@ import urlparse
 import os
 import psycopg2
 
+INTERVAL = int(os.environ["INTERVAL"])
+START_TIME = int(os.environ["START_TIME"])
+
 def integrate_simps(points):
 	"""
 	Takes a list of tuples and integrates over them
@@ -11,11 +14,11 @@ def integrate_simps(points):
 	y_val = [tup[1] for tup in points]
 	x_val = [tup[0] for tup in points]
 
-	return scipy.integrate.trapz(y_val, x_val, 'avg')
+	if START_TIME not in x_val:
+		x_val.insert(0, START_TIME)
+		y_val.insert(0, 0)
 
-def setup_points(data):
-	points = []
-	
+	return scipy.integrate.simps(y_val, x_val, 'avg')
 
 def pull_results(conn):
 	"""
@@ -25,24 +28,35 @@ def pull_results(conn):
 
 	cur.execute("SELECT time,location,count_people,count_bikes FROM sessions;")
 	
-	data_map = collections.defaultdict(list)
+	data_people = collections.defaultdict(list)
+	data_bikes = collections.defaultdict(list)
 	for row in cur.fetchall():
-		data_map[row[1]].append((row[0], row[2], row[3]))
+		people = []
+		bikes = []
+
+		start_time = row[0] - INTERVAL
+		rate_people = float(row[2]) / INTERVAL
+		rate_bikes = float(row[3]) / INTERVAL
+
+		people.extend([(start_time, rate_people),(row[0], rate_people)])
+		bikes.extend([(start_time, rate_bikes), (row[0], rate_bikes)])
+
+		data_people[row[1]].extend(people)
+		data_bikes[row[1]].extend(bikes)
 
 	cur.close()
 	conn.close()
-	return data_map
+	return data_people, data_bikes
 
-def connect_postgres():
-	urlparse.uses_netloc.append("postgres")
-	url = urlparse.urlparse(os.environ["DATABASE_URL"])
+def run_stats():
+	# construct a conn
+	data_people, data_bikes = pull_results(conn)
+	totals = collections.defaultdict(list)
 
-	conn = psycopg2.connect(
-    	database=url.path[1:],
-    	user=url.username,
-    	password=url.password,
-    	host=url.hostname,
-    	port=url.port)
-	return conn
+	for location, data in data_people.items():
+		totals[location].append(integrate_simps(data))
 
-print pull_results(connect_postgres())
+	for location, data in data_bikes.items():
+		totals[location].append(integrate_simps(data))
+
+	return totals
