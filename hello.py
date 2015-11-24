@@ -6,6 +6,7 @@ import calendar
 import time
 import collections
 import scipy.integrate
+import logging
 
 app = Flask(__name__)
 
@@ -31,8 +32,10 @@ def select_event():
 	cur = conn.cursor()
 	events = []
 	cur.execute("SELECT distinct id FROM events")
-	for eid in cur:
-		events.append(dict(text=eid))
+	for eid in cur.fetchall():
+		app.logger.info(eid)
+		events.append(dict(text=eid[0]))
+	app.logger.info(events)
 	return render_template('select_event.html', events=events)
 
 @app.route('/data/')
@@ -55,7 +58,7 @@ def post_to_postgres(num_people, num_bikes):
 	
 	cur = conn.cursor()
 
-	cur.execute("INSERT INTO sessions (eid, time, location, count_people, count_bikes) VALUES (%s,%s,%s,%s,%s)", (1, calendar.timegm(time.gmtime()), "location", num_people, num_bikes))
+	cur.execute("INSERT INTO sessions (eid, time, location, count_people, count_bikes) VALUES (%s,%s,%s,%s,%s)", (1, calendar.timegm(time.gmtime()), 1, num_people, num_bikes))
 	conn.commit()
 	end_postgres(conn, cur)
 
@@ -66,7 +69,7 @@ def display_data():
 	cur = conn.cursor()
 	events = []
 	cur.execute("SELECT distinct id FROM events")
-	for eid in cur:
+	for eid in cur.fetchall():
 		events.append(dict(text=eid))
 
 
@@ -83,6 +86,7 @@ def display_data():
 
 INTERVAL = int(os.environ["INTERVAL"])
 START_TIME = int(os.environ["START_TIME"])
+END_TIME = int(os.environ["END_TIME"])
 
 def integrate_simps(points):
 	"""
@@ -94,6 +98,10 @@ def integrate_simps(points):
 	if START_TIME not in x_val:
 		x_val.insert(0, START_TIME)
 		y_val.insert(0, 0)
+
+	if END_TIME not in x_val:
+		x_val.append(END_TIME)
+		y_val.append(0)
 
 	return scipy.integrate.simps(y_val, x_val, 'avg')
 
