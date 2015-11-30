@@ -44,7 +44,7 @@ def get_data():
 	PAGE = ""
 
 	for location, total in totals.items():
-		PAGE += location 
+		PAGE += str(location) 
 		PAGE += " - " 
 		PAGE += "People: " 
 		PAGE += str(total[0])
