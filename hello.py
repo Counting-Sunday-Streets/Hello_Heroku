@@ -41,17 +41,15 @@ def select_event():
 @app.route('/data/')
 def get_data():
 	totals = run_stats()
-	PAGE = ""
+	num_entrances = len(totals.keys())
+	sum_people = sum([pair[0] + pair[1] for pair in totals.values()])
 
+	data = []
 	for location, total in totals.items():
-		PAGE += str(location) 
-		PAGE += " - " 
-		PAGE += "People: " 
-		PAGE += str(total[0])
-		PAGE += ", Bikes: " 
-		PAGE += str(total[1])
-		PAGE += "\n"
-	return PAGE
+		data.append({"loc": location, "tot": total})
+
+	totals = {"total": str(int(sum_people * 25 / num_entrances))}
+	return render_template("data.html", data=data, totals=totals)
 
 def post_to_postgres(num_people, num_bikes):
 	conn = connect_postgres()
@@ -111,7 +109,7 @@ def pull_results(conn):
 	"""
 	cur = conn.cursor()
 
-	cur.execute("SELECT time,location,count_people,count_bikes FROM sessions;")
+	cur.execute("SELECT eid,time,location,count_people,count_bikes FROM sessions WHERE eid = '2';")
 	
 	data_people = collections.defaultdict(list)
 	data_bikes = collections.defaultdict(list)
@@ -119,15 +117,15 @@ def pull_results(conn):
 		people = []
 		bikes = []
 
-		start_time = row[0] - INTERVAL
-		rate_people = float(row[2]) / INTERVAL
-		rate_bikes = float(row[3]) / INTERVAL
+		start_time = row[1] - INTERVAL
+		rate_people = float(row[3]) / INTERVAL
+		rate_bikes = float(row[4]) / INTERVAL
 
-		people.extend([(start_time, rate_people),(row[0], rate_people)])
-		bikes.extend([(start_time, rate_bikes), (row[0], rate_bikes)])
+		people.extend([(start_time, rate_people),(row[1], rate_people)])
+		bikes.extend([(start_time, rate_bikes), (row[1], rate_bikes)])
 
-		data_people[row[1]].extend(people)
-		data_bikes[row[1]].extend(bikes)
+		data_people[row[2]].extend(people)
+		data_bikes[row[2]].extend(bikes)
 
 	end_postgres(conn, cur)
 	return data_people, data_bikes
@@ -138,10 +136,10 @@ def run_stats():
 	totals = collections.defaultdict(list)
 
 	for location, data in data_people.items():
-		totals[location].append(integrate_simps(data))
+		totals[location].append(int(integrate_simps(data)))
 
 	for location, data in data_bikes.items():
-		totals[location].append(integrate_simps(data))
+		totals[location].append(int(integrate_simps(data)))
 
 	return totals
 

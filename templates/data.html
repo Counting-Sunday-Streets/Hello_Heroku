@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Counter{% endblock %}
+{% block content %}
+
+<table class="table">
+  <tr>
+    <th> Entrance </td>
+    <th> Count People </td>
+    <th> Count Bikes </td>
+  </tr>
+
+  {% for entry in data %}
+  <tr>
+    <td> {{ entry.loc }} </td>
+    <td> {{ entry.tot[0] }} </td>
+    <td> {{ entry.tot[1] }} </td>
+  </tr>
+  {% endfor %}
+
+</table>
+
+</br>
+Total: {{ totals.total }}
+</br>
+</br>
+
+{% endblock %}
