@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Counter{% endblock %}
 {% block content %}
+</br>
+Counting on event {{ data.event }}
 
 <form id="counter" method="post" action=" {{ url_for('hello') }} ">
-
+  <fieldset id='countButtonField' disabled>
   <div class="row">
     <div class="col-xs-4 col-xs-offset-1">
       <div class="row">
@@ -30,6 +32,7 @@
       </div>
     </div>
   </div>
+  </fieldset>
 
   <div class="row">
     <div class="col-xs-6 col-xs-offset-3">
@@ -40,11 +43,25 @@
         </div>
       </div>
 
+      <div class="alert alert-warning collapse" id="locationEmpty">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Uh oh!</strong> A location is required. Please enter one below.
+      </div>
+
+      <div class='row'>
+        <div class='col-xs-12'>
+          <label for='locationBox'>Location</label>
+          <input class="form-control" type="number" id="locationBox" name="locationBox" value="0">
+        </div>
+      </div>
+      </br>
+      <fieldset id='startButtonField'>
       <div class="row">
         <div class="col-xs-12">
           <input class="btn btn-default" type="button" value="Start" id="startButton" />
         </div>
       </div>
+      </fieldset>
       </br>
       <div class="row">
         <div class="col-xs-12">
@@ -61,4 +78,5 @@
   </div>
 </form>
 
+<script src="{{ url_for('static', filename='js/timer.js') }}"></script>
 {% endblock %}
