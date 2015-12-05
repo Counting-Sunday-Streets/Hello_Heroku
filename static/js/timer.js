@@ -5,11 +5,21 @@ var bikeButton = document.getElementById("countBikeButton");
 var start = document.getElementById("startButton");
 var displayNumPed = document.getElementById("displayCountPed");   
 var displayNumBike = document.getElementById("displayCountBike");
-var buttonPedValue = document.getElementById("buttonPedValue")
-var buttonBikeValue = document.getElementById("buttonBikeValue")
+var buttonPedValue = document.getElementById("buttonPedValue");
+var buttonBikeValue = document.getElementById("buttonBikeValue");
+var countButtonField = document.getElementById("countButtons");
+var startButtonField = document.getElementById("startButtonField");
+var location = document.getElementById("location");
+
 start.onclick = function(){
-  display = document.querySelector('#time');
-  startTimer(5, display);
+  countButtons.disabled = false;
+  startButtons.disabled = true;
+  if (location.value.length != 0) {
+    display = document.querySelector('#time');
+    startTimer(5, display);
+  } else {
+    $('#noLocationEntered').show();
+  }
 }
 pedButton.onclick = function(){
   countPed++;
