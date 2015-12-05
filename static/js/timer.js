@@ -7,18 +7,18 @@ var displayNumPed = document.getElementById("displayCountPed");
 var displayNumBike = document.getElementById("displayCountBike");
 var buttonPedValue = document.getElementById("buttonPedValue");
 var buttonBikeValue = document.getElementById("buttonBikeValue");
-var countButtonField = document.getElementById("countButtons");
+var countButtonField = document.getElementById("countButtonField");
 var startButtonField = document.getElementById("startButtonField");
-var location = document.getElementById("location");
+var locationBox = document.getElementById("locationBox");
 
 start.onclick = function(){
-  countButtons.disabled = false;
-  startButtons.disabled = true;
-  if (location.value.length != 0) {
+  if (locationBox.value != "0") {
+    countButtonField.disabled = false;
+    startButtonField.disabled = true;
     display = document.querySelector('#time');
     startTimer(5, display);
   } else {
-    $('#noLocationEntered').show();
+     $('#locationEmpty').show();
   }
 }
 pedButton.onclick = function(){

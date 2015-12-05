@@ -19,8 +19,8 @@ def hello():
 	if request.method == "GET":
 		return render_template('counter.html', data={"event": os.environ['CURRENT_EVENT']})
 	else:
-		post_to_postgres(request.form['buttonPedValue'], request.form['buttonBikeValue'])
-		return render_template('counter.html')
+		post_to_postgres(request.form['buttonPedValue'], request.form['buttonBikeValue'], request.form['locationBox'])
+		return render_template('counter.html', data={"event": os.environ['CURRENT_EVENT']})
 
 @app.route('/createevent/', methods=['GET', 'POST'])
 def create_event():
@@ -68,13 +68,13 @@ def get_data():
 	totals = {"total": str(int(sum_people * 25 / num_entrances))}
 	return render_template("data.html", data=data, totals=totals)
 
-def post_to_postgres(num_people, num_bikes):
+def post_to_postgres(num_people, num_bikes, loc):
 	conn = connect_postgres()
 	
 	cur = conn.cursor()
 
 	cur.execute("INSERT INTO sessions (eid, time, location, count_people, count_bikes) VALUES (%s,%s,%s,%s,%s)", 
-		(os.environ['CURRENT_EVENT'], calendar.timegm(time.gmtime()), 1, num_people, num_bikes))
+		(os.environ['CURRENT_EVENT'], calendar.timegm(time.gmtime()), loc, num_people, num_bikes))
 	conn.commit()
 	end_postgres(conn, cur)
 
