@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Counter{% endblock %}
 {% block content %}
-</br>
 Counting on event {{ data.event }}
+</br>
 
 <form id="counter" method="post" action=" {{ url_for('hello') }} ">
   <fieldset id='countButtonField' disabled>
@@ -15,7 +15,7 @@ Counting on event {{ data.event }}
       </div>
       <div class="row">
         <div class"col-xs-12">
-          <input class="btn btn-info" type="button" value="Count Pedestrian" id="countPedButton" />
+          <input class="btn btn-info btn-lg" type="button" value="Pedestrian" id="countPedButton" />
         </div>
       </div>
     </div>
@@ -27,13 +27,13 @@ Counting on event {{ data.event }}
       </div>
       <div class="row">
         <div class"col-xs-12">
-          <input class="btn btn-info" type="button" value="Count Bike" id="countBikeButton" />
+          <input class="btn btn-info btn-lg" type="button" value="Bike" id="countBikeButton" />
         </div>
       </div>
     </div>
   </div>
   </fieldset>
-
+  </br>
   <div class="row">
     <div class="col-xs-6 col-xs-offset-3">
 
@@ -51,7 +51,7 @@ Counting on event {{ data.event }}
       <div class='row'>
         <div class='col-xs-12'>
           <label for='locationBox'>Location</label>
-          <input class="form-control" type="number" id="locationBox" name="locationBox" value="0">
+          <input class="form-control" type="number" id="locationBox" name="locationBox" value="0" pattern="[0-9]*">
         </div>
       </div>
       </br>
