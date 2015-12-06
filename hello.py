@@ -12,9 +12,14 @@ import datetime
 app = Flask(__name__)
 
 ###
-###  PAGES 
+### Pages
 ###
-@app.route('/', methods=['GET', 'POST'])
+
+@app.route('/')
+def home_page():
+	return render_template('home_page.html')
+
+@app.route('/count/', methods=['GET', 'POST'])
 def hello():
 	if request.method == "GET":
 		return render_template('counter.html', data={"event": os.environ['CURRENT_EVENT']})
@@ -88,7 +93,7 @@ def display_data():
 	for eid in cur.fetchall():
 		events.append(dict(text=eid))
 
-
+	#SELECT time, count_people, count_bikes from sessions where eid= ***selected event***
 	if request.method == "GET":
 		return render_template('display_data.html', events=events,data=dict(eid=5, nump=3, numb=2))
 	else:
