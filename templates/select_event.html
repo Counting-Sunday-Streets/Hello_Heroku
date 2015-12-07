@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Select Event{% endblock %}
 {% block content %}
-
+<h3>Select Event</h3>
+</br>
+<h4>Counting on Event {{ data.event }}</h4>
+</br>
 {% if add.add %}
 <div class="alert alert-success" role="alert">Selection successful!</div>
-{% end if %}
+{% endif %}
 
 <table class="table">
   <tr>
@@ -28,8 +31,6 @@
 </br>
 </br>
 </br>
-
-<h3>Counting on Event {{ data.event }}</h3>
 
 {% endblock %}
 
