@@ -70,7 +70,7 @@ def select_event():
 		for event in cur.fetchall():
 			events.append({"data": event})
 		end_postgres(conn, cur)
-		return render_template('select_event', events=events, add={'add': True})
+		return render_template('select_event.html', events=events, data={"event": os.environ['CURRENT_EVENT']}, add={'add': True})
 
 @app.route('/data/')
 def get_data():
