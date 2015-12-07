@@ -176,7 +176,7 @@ def get_times(event):
 	conn = connect_postgres()
 	cur = conn.cursor()
 
-	cur.execute("SELECT start_time, end_time FROM events WHERE id = %s;", (os.environ['CURRENT_EVENT']))
+	cur.execute("SELECT start_time, end_time FROM events WHERE id = %s;", (os.environ['CURRENT_EVENT'],))
 	row = cur.fetchall()
 
 	end_time = row[0][1]
