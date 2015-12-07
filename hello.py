@@ -12,6 +12,14 @@ import datetime
 app = Flask(__name__)
 
 ###
+### EVENT VARIABLES
+###
+CURRENT_EVENT = 0
+START_TIME = 0
+END_TIME = 14400
+INTERVAL = 900
+
+###
 ### Pages
 ###
 
@@ -21,14 +29,16 @@ def home_page():
 
 @app.route('/count/', methods=['GET', 'POST'])
 def hello():
+	env = get_current_event()
 	if request.method == "GET":
-		return render_template('counter.html', data={"event": os.environ['CURRENT_EVENT']})
+		return render_template('counter.html', data={"event": env[0]})
 	else:
 		post_to_postgres(request.form['buttonPedValue'], request.form['buttonBikeValue'], request.form['locationBox'])
-		return render_template('counter.html', data={"event": os.environ['CURRENT_EVENT']})
+		return render_template('counter.html', data={"event": env[0]})
 
 @app.route('/createevent/', methods=['GET', 'POST'])
 def create_event():
+	env = get_current_event()
 	if request.method == "GET":
 		return render_template('create_event.html')
 	else:
@@ -42,10 +52,11 @@ def create_event():
 			(epoch_starttime, epoch_endtime, request.form['event-name'], 900, request.form['event-entrances']))
 		conn.commit()
 		end_postgres(conn, cur)
-		return render_template('select_event.html')
+		return render_template('select_event.html', events=events, data={"event": env[0]}, add={'add': False})
 
 @app.route('/selectevent/', methods=['GET', 'POST'])
 def select_event():
+	env = get_current_event()
 	if request.method == "GET":
 		conn = connect_postgres()
 
@@ -55,25 +66,23 @@ def select_event():
 		for event in cur.fetchall():
 			events.append({"data": event})
 		end_postgres(conn, cur)
-		return render_template('select_event.html', events=events, data={"event": os.environ['CURRENT_EVENT']}, add={'add': False})
+		return render_template('select_event.html', events=events, data={"event": env[0]}, add={'add': False})
 	else:
-		os.environ['CURRENT_EVENT'] = request.form['event']
-		start, end = get_times(os.environ['CURRENT_EVENT'])
-		os.environ['START_TIME'] = str(start)
-		os.environ['END_TIME'] = str(end)
+		set_event(request.form['event'])
 
 		conn = connect_postgres()
-
 		cur = conn.cursor()
+
 		events = []
 		cur.execute("SELECT * FROM events;")
 		for event in cur.fetchall():
 			events.append({"data": event})
 		end_postgres(conn, cur)
-		return render_template('select_event.html', events=events, data={"event": os.environ['CURRENT_EVENT']}, add={'add': True})
+		return render_template('select_event.html', events=events, data={"event": request.form['event']}, add={'add': True})
 
 @app.route('/data/')
 def get_data():
+	env = get_current_event()
 	totals = run_stats()
 	num_entrances = len(totals.keys())
 	if num_entrances != 0:
@@ -88,17 +97,17 @@ def get_data():
 		totals = {"total": str(int(sum_people * 25 / num_entrances))}
 		totals["ped"] = str(int(sum_ped * 25 / num_entrances))
 		totals["cyc"] = str(int(sum_cyc * 25 / num_entrances))
-		return render_template("data.html", data=data, totals=totals, current={"event": os.environ['CURRENT_EVENT']})
+		return render_template("data.html", data=data, totals=totals, current={"event": env[0]})
 	else:
-		return render_template("data.html", data=[], totals={'total':0, 'ped':0, 'cyc':0}, current={"event": os.environ['CURRENT_EVENT']})
+		return render_template("data.html", data=[], totals={'total':0, 'ped':0, 'cyc':0}, current={"event": env[0]})
 
 def post_to_postgres(num_people, num_bikes, loc):
+	env = get_current_event()
 	conn = connect_postgres()
-	
 	cur = conn.cursor()
 
 	cur.execute("INSERT INTO sessions (eid, time, location, count_people, count_bikes) VALUES (%s,%s,%s,%s,%s)", 
-		(os.environ['CURRENT_EVENT'], calendar.timegm(time.gmtime()), loc, num_people, num_bikes))
+		(env[0], calendar.timegm(time.gmtime()), loc, num_people, num_bikes))
 	conn.commit()
 	end_postgres(conn, cur)
 
@@ -110,18 +119,17 @@ def integrate_simps(points):
 	"""
 	Takes a list of tuples and integrates over them
 	"""
-	START_TIME = float(os.environ["START_TIME"])
-	END_TIME = float(os.environ["END_TIME"])
+	env = get_current_event()
 
 	y_val = [tup[1] for tup in points]
 	x_val = [tup[0] for tup in points]
 
-	if START_TIME not in x_val:
-		x_val.insert(0, START_TIME)
+	if env[1] not in x_val:
+		x_val.insert(0, env[1])
 		y_val.insert(0, 0)
 
-	if END_TIME not in x_val:
-		x_val.append(END_TIME)
+	if env[2] not in x_val:
+		x_val.append(env[2])
 		y_val.append(0)
 
 	return scipy.integrate.simps(y_val, x_val, 'avg')
@@ -130,11 +138,11 @@ def pull_results(conn):
 	"""
 	Queries the database and returns lists of tuple rows mapped to locations
 	"""
-	INTERVAL = int(os.environ["INTERVAL"])
+	env = get_current_event()
 
 	cur = conn.cursor()
 
-	cur.execute("SELECT eid,time,location,count_people,count_bikes FROM sessions WHERE eid = %s;", (os.environ['CURRENT_EVENT']))
+	cur.execute("SELECT eid,time,location,count_people,count_bikes FROM sessions WHERE eid = %s;", (env[0]))
 	
 	data_people = collections.defaultdict(list)
 	data_bikes = collections.defaultdict(list)
@@ -142,9 +150,9 @@ def pull_results(conn):
 		people = []
 		bikes = []
 
-		start_time = row[1] - INTERVAL
-		rate_people = float(row[3]) / INTERVAL
-		rate_bikes = float(row[4]) / INTERVAL
+		start_time = row[1] - env[3]
+		rate_people = float(row[3]) / env[3]
+		rate_bikes = float(row[4]) / env[3]
 
 		people.extend([(start_time, rate_people),(row[1], rate_people)])
 		bikes.extend([(start_time, rate_bikes), (row[1], rate_bikes)])
@@ -168,17 +176,6 @@ def run_stats():
 
 	return totals
 
-def get_times(event):
-	conn = connect_postgres()
-	cur = conn.cursor()
-
-	cur.execute("SELECT start_time, end_time FROM events WHERE id = %s;", (os.environ['CURRENT_EVENT']))
-	row = cur.fetchall()
-
-	end_time = row[0][1]
-	start_time = row[0][0]
-	return start_time, end_time
-
 ###
 ### DATABASE CONNECTION MAINTAINANCE
 ###
@@ -198,6 +195,26 @@ def connect_postgres():
 def end_postgres(conn, cur):
 	cur.close()
 	conn.close()
+
+def set_event(id):
+	conn = connect_postgres()
+	cur = conn.cursor()
+
+	cur.execute("SELECT * FROM events WHERE id=%s", (id,))
+	current = cur.fetchall()
+	cur.execute("UPDATE current SET current_event=%s, start_time=%s, end_time=%s, interval=900", 
+		(current[0][0], current[0][1], current[0][2]))
+	conn.commit()
+	end_postgres(conn, cur)
+
+def get_current_event():
+	conn = connect_postgres()
+	cur = conn.cursor()
+
+	cur.execute("SELECT * FROM current;")
+	current = cur.fetchall()
+	end_postgres(conn, cur)
+	return current[0][0], current[0][1], current[0][2], current[0][3]
 
 if __name__ == '__main__':
 	app.debug = True
