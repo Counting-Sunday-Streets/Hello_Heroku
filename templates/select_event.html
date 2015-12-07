@@ -29,8 +29,17 @@
 </table>
 
 </br>
-</br>
-</br>
+<form action="{{ url_for('create_event') }}">
+  <div class="form-group">
+    <input class="btn btn-large btn-info" type="submit" value="Create New Event">
+  </div>
+</form>
+
+<form action="{{ url_for('get_data') }}">
+  <div class="form-group">
+    <input class="btn btn-large btn-info" type="submit" value="Event Data">
+  </div>
+</form>
 
 {% endblock %}
 
