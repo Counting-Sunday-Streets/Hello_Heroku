@@ -13,6 +13,7 @@
   <tr>
     <th> ID </th>
     <th> Location </th>
+    <th> Entrances </th>
   </tr>
 
   {% for event in events %}
@@ -21,6 +22,7 @@
   <tr>
     <td> {{ event.data[0] }} </td>
     <td> {{ event.data[3] }} </td>
+    <td> {{ event.data[5] }} </td>
     <td> <input class="btn btn-default" type="submit" value="Select" name="submit"> </td>
   </tr>
   </form>
