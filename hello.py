@@ -146,7 +146,7 @@ def pull_results(conn):
 
 	cur = conn.cursor()
 
-	cur.execute("SELECT eid,time,location,count_people,count_bikes FROM sessions WHERE eid = %s;", (env[0]))
+	cur.execute("SELECT eid,time,location,count_people,count_bikes FROM sessions WHERE eid = %s;", (env[0],))
 	
 	data_people = collections.defaultdict(list)
 	data_bikes = collections.defaultdict(list)
