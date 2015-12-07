@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Counter{% endblock %}
 {% block content %}
-Counting on event {{ data.event }}
+
+<h4>Counting on Event {{ data.event }}</h4>
+
 </br>
 
 <form id="counter" method="post" action=" {{ url_for('hello') }} ">
