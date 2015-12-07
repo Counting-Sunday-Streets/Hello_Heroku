@@ -42,7 +42,7 @@ def create_event():
 			(epoch_starttime, epoch_endtime, request.form['event-name'], 900, request.form['event-entrances']))
 		conn.commit()
 		end_postgres(conn, cur)
-		return render_template('create_event.html')
+		return render_template('select_event.html')
 
 @app.route('/selectevent/', methods=['GET', 'POST'])
 def select_event():
