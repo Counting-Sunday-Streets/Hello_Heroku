@@ -27,7 +27,7 @@ Counting on event {{ data.event }}
       </div>
       <div class="row">
         <div class"col-xs-12">
-          <input class="btn btn-info btn-lg" type="button" value="Bike" id="countBikeButton" />
+          <input class="btn btn-info btn-lg" type="button" value="Cyclist" id="countBikeButton" />
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@ Counting on event {{ data.event }}
 
       <div class="row">
         <div class="col-xs-12">
-          <p class="text-center count-text"><span id="time">00:05</span></p>
+          <p class="text-center count-text"><span id="time">15:00</span></p>
         </div>
       </div>
 
@@ -65,7 +65,7 @@ Counting on event {{ data.event }}
       </br>
       <div class="row">
         <div class="col-xs-12">
-          <a href="#" class="btn btn-danger" role="button">Exit Session</a>
+          <a href="{{ url_for('home_page') }}" class="btn btn-danger" role="button">Exit Session</a>
         </div>
       </div>
 

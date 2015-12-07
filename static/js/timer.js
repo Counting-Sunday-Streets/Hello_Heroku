@@ -12,11 +12,11 @@ var startButtonField = document.getElementById("startButtonField");
 var locationBox = document.getElementById("locationBox");
 
 start.onclick = function(){
-  if (locationBox.value != "0") {
+  if (locationBox.value > "0") {
     countButtonField.disabled = false;
     startButtonField.disabled = true;
     display = document.querySelector('#time');
-    startTimer(5, display);
+    startTimer(900, display);
   } else {
      $('#locationEmpty').show();
   }

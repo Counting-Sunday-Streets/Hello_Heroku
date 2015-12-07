@@ -53,6 +53,9 @@ def select_event():
 		return render_template('select_event.html', events=events)
 	else:
 		os.environ['CURRENT_EVENT'] = request.form['event']
+		start, end = get_times(os.environ['CURRENT_EVENT'])
+		os.environ['START_TIME'] = str(start)
+		os.environ['END_TIME'] = str(end)
 		return os.environ['CURRENT_EVENT']
 
 @app.route('/data/')
@@ -60,12 +63,16 @@ def get_data():
 	totals = run_stats()
 	num_entrances = len(totals.keys())
 	sum_people = sum([pair[0] + pair[1] for pair in totals.values()])
+	sum_ped = sum([pair[0] for pair in totals.values()])
+	sum_cyc = sum([pair[1] for pair in totals.values()])
 
 	data = []
 	for location, total in totals.items():
 		data.append({"loc": location, "tot": total})
 
 	totals = {"total": str(int(sum_people * 25 / num_entrances))}
+	totals["ped"] = str(int(sum_ped * 25 / num_entrances))
+	totals["cyc"] = str(int(sum_cyc * 25 / num_entrances))
 	return render_template("data.html", data=data, totals=totals)
 
 def post_to_postgres(num_people, num_bikes, loc):
@@ -104,8 +111,8 @@ def integrate_simps(points):
 	"""
 	Takes a list of tuples and integrates over them
 	"""
-	START_TIME = int(os.environ["START_TIME"])
-	END_TIME = int(os.environ["END_TIME"])
+	START_TIME = float(os.environ["START_TIME"])
+	END_TIME = float(os.environ["END_TIME"])
 
 	y_val = [tup[1] for tup in points]
 	x_val = [tup[0] for tup in points]
@@ -161,6 +168,17 @@ def run_stats():
 		totals[location].append(int(integrate_simps(data)))
 
 	return totals
+
+def get_times(event):
+	conn = connect_postgres()
+	cur = conn.cursor()
+
+	cur.execute("SELECT start_time, end_time FROM events WHERE id = %s;", (os.environ['CURRENT_EVENT']))
+	row = cur.fetchall()
+
+	end_time = row[0][1]
+	start_time = row[0][0]
+	return start_time, end_time
 
 ###
 ### DATABASE CONNECTION MAINTAINANCE
