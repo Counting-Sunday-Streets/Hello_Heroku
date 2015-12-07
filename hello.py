@@ -76,18 +76,21 @@ def select_event():
 def get_data():
 	totals = run_stats()
 	num_entrances = len(totals.keys())
-	sum_people = sum([pair[0] + pair[1] for pair in totals.values()])
-	sum_ped = sum([pair[0] for pair in totals.values()])
-	sum_cyc = sum([pair[1] for pair in totals.values()])
+	if num_entrances != 0:
+		sum_people = sum([pair[0] + pair[1] for pair in totals.values()])
+		sum_ped = sum([pair[0] for pair in totals.values()])
+		sum_cyc = sum([pair[1] for pair in totals.values()])
 
-	data = []
-	for location, total in totals.items():
-		data.append({"loc": location, "tot": total})
+		data = []
+		for location, total in totals.items():
+			data.append({"loc": location, "tot": total})
 
-	totals = {"total": str(int(sum_people * 25 / num_entrances))}
-	totals["ped"] = str(int(sum_ped * 25 / num_entrances))
-	totals["cyc"] = str(int(sum_cyc * 25 / num_entrances))
-	return render_template("data.html", data=data, totals=totals, current={"event": os.environ['CURRENT_EVENT']})
+		totals = {"total": str(int(sum_people * 25 / num_entrances))}
+		totals["ped"] = str(int(sum_ped * 25 / num_entrances))
+		totals["cyc"] = str(int(sum_cyc * 25 / num_entrances))
+		return render_template("data.html", data=data, totals=totals, current={"event": os.environ['CURRENT_EVENT']})
+	else:
+		return render_template("data.html", data=[], totals={'total':0, 'ped':0, 'cyc':0}, current={"event": os.environ['CURRENT_EVENT']})
 
 def post_to_postgres(num_people, num_bikes, loc):
 	conn = connect_postgres()
@@ -97,24 +100,6 @@ def post_to_postgres(num_people, num_bikes, loc):
 	cur.execute("INSERT INTO sessions (eid, time, location, count_people, count_bikes) VALUES (%s,%s,%s,%s,%s)", 
 		(os.environ['CURRENT_EVENT'], calendar.timegm(time.gmtime()), loc, num_people, num_bikes))
 	conn.commit()
-	end_postgres(conn, cur)
-
-@app.route('/displaydata/', methods=['GET', 'POST'])
-def display_data():
-	conn = connect_postgres()
-
-	cur = conn.cursor()
-	events = []
-	cur.execute("SELECT distinct id FROM events")
-	for eid in cur.fetchall():
-		events.append(dict(text=eid))
-
-	#SELECT time, count_people, count_bikes from sessions where eid= ***selected event***
-	if request.method == "GET":
-		return render_template('display_data.html', events=events,data=dict(eid=5, nump=3, numb=2))
-	else:
-		#post_to_postgres(request.form['buttonPedValue'], request.form['buttonBikeValue'])
-		return render_template('display_data.html', events=events,data=dict(eid=0, nump=0, numb=0))
 	end_postgres(conn, cur)
 
 ###
