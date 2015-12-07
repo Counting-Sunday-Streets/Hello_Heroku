@@ -55,7 +55,7 @@ def select_event():
 		for event in cur.fetchall():
 			events.append({"data": event})
 		end_postgres(conn, cur)
-		return render_template('select_event.html', events=events)
+		return render_template('select_event.html', events=events, data={"event": os.environ['CURRENT_EVENT']})
 	else:
 		os.environ['CURRENT_EVENT'] = request.form['event']
 		start, end = get_times(os.environ['CURRENT_EVENT'])
@@ -78,7 +78,7 @@ def get_data():
 	totals = {"total": str(int(sum_people * 25 / num_entrances))}
 	totals["ped"] = str(int(sum_ped * 25 / num_entrances))
 	totals["cyc"] = str(int(sum_cyc * 25 / num_entrances))
-	return render_template("data.html", data=data, totals=totals)
+	return render_template("data.html", data=data, totals=totals, current={"event": os.environ['CURRENT_EVENT']})
 
 def post_to_postgres(num_people, num_bikes, loc):
 	conn = connect_postgres()
