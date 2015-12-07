@@ -2,15 +2,34 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
+<!--<div class="container">
+<div class="row">
+  <div class = "col-md-4">
+  </div>
+  <div class ="col-md-4">  
+
+
+   <a = href = "http://gohealthyhouston.org/sundaystreetshtx/"> <img src= "http://www.houstontx.gov/specialevents/sundaystreets/sstx-logo-200.jpg"/>
+</a>
+  </div>
+</div>-->
+
+<div class="row">
+    <div class="col-sm-offset-5 col-sm-2 text-center">
+        <div class="btn-group" data-toggle="buttons">
+            <a = href = "http://gohealthyhouston.org/sundaystreetshtx/"> <img src= "http://www.houstontx.gov/specialevents/sundaystreets/sstx-logo-200.jpg"/>
+    </div>
+</div>
+
 <form action="{{ url_for('hello') }}">
   <div class="form-group">
-    <input class="btn btn-default" type="submit" value="Count">
+    <input class="btn btn-large btn-info" type="submit" value="Count">
   </div>
 </form>
 
 <form action="https://docs.google.com/forms/d/15HRm8PCn1y3hFIQFpZqSUU2ZerhoMoQntgbUmBOB7wg/viewform?usp=send_form">
   <div class="form-group">
-    <input class="btn btn-default" type="submit" value="Survey">
+    <input class="btn btn-large btn-info" type="submit" value="Survey">
   </div>
 </form>
 
