@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Data{% endblock %}
 {% block content %}
+</br>
+<h1>Total: {{ totals.total }}</h1>
+<h2>Pedestrians: {{ totals.ped }}</h2>
+<h2>Cyclists: {{ totals.cyc }}</h2>
 
 <table class="table">
   <tr>
@@ -18,10 +22,5 @@
   {% endfor %}
 
 </table>
-
-</br>
-Total: {{ totals.total }}
-</br>
-</br>
 
 {% endblock %}
