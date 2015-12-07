@@ -2,6 +2,10 @@
 {% block title %}Select Event{% endblock %}
 {% block content %}
 
+{% if add.add %}
+<div class="alert alert-success" role="alert">Selection successful!</div>
+{% end if %}
+
 <table class="table">
   <tr>
     <th> ID </th>

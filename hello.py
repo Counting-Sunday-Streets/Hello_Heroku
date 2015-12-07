@@ -55,13 +55,22 @@ def select_event():
 		for event in cur.fetchall():
 			events.append({"data": event})
 		end_postgres(conn, cur)
-		return render_template('select_event.html', events=events)
+		return render_template('select_event.html', events=events, add={'add': False})
 	else:
 		os.environ['CURRENT_EVENT'] = request.form['event']
 		start, end = get_times(os.environ['CURRENT_EVENT'])
 		os.environ['START_TIME'] = str(start)
 		os.environ['END_TIME'] = str(end)
-		return os.environ['CURRENT_EVENT']
+
+		conn = connect_postgres()
+
+		cur = conn.cursor()
+		events = []
+		cur.execute("SELECT * FROM events;")
+		for event in cur.fetchall():
+			events.append({"data": event})
+		end_postgres(conn, cur)
+		return render_template('select_event', events=events, add={'add': True})
 
 @app.route('/data/')
 def get_data():
