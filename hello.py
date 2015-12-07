@@ -41,8 +41,12 @@ def create_event():
 		cur.execute("INSERT INTO events (start_time, end_time, location, count_interval, entrances) VALUES (%s,%s,%s,%s,%s)",
 			(epoch_starttime, epoch_endtime, request.form['event-name'], 900, request.form['event-entrances']))
 		conn.commit()
+		events = []
+		cur.execute("SELECT * FROM events;")
+		for event in cur.fetchall():
+			events.append({"data": event})
 		end_postgres(conn, cur)
-		return render_template('select_event.html')
+		return render_template('select_event.html', events=events, data={"event": os.environ['CURRENT_EVENT']}, add={'add': False})
 
 @app.route('/selectevent/', methods=['GET', 'POST'])
 def select_event():
